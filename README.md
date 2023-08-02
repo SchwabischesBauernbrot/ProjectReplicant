@@ -11,7 +11,7 @@ Export them to JSON and format the markdown.
 ## Step Three
 Put the logs into combined-input folder.
 ## Step Four
-Go to the .env.txt and remove the extention .txt, saving it as a .env file.
+Go to the .env.txt and remove the extension .txt, saving it as a .env file.
 Inside this new file, change the subject name to your discord username
 ## Step Five
 Run the lora-logs.bat
