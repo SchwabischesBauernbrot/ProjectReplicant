@@ -1,0 +1,22 @@
+{
+  "name": "projectreplicant",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "solo-format": "node logprocessing.js",
+    "solo-text": "node output2txt.js",
+    "combo-format": "node combined.js",
+    "combo-text": "node combined2txt.js",
+    "combo-log": "node combined2log.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "fs": "^0.0.1-security",
+    "node": "^20.5.0",
+    "nodemon": "^3.0.1",
+    "openai": "^3.3.0"
+  }
+}
