@@ -31,7 +31,7 @@ Then export.
 Put the logs into log-input folder.
 ## Step Four
 same as above.
-#3 Step Five
+## Step Five
 Run the solo-memories.bat
 It will ask you to press space after each script is run, do so.
 ## Done!
