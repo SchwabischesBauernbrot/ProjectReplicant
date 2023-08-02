@@ -1,4 +1,7 @@
 const fs = require('fs');
+require('dotenv').config()
+
+let botName = process.env.SUBJECT_NAME;
 
 const inputFile = './combined-output/formatted-output.json';
 
@@ -25,8 +28,8 @@ for (let message of jsonObject) {
   }
 
   let name = message.name;
-  if(message.name !== '_thesentinel') name = '<USER>';
-  if(message.name === '_thesentinel') name = '<BOT>';
+  if(message.name !== botName) name = '<USER>';
+  if(message.name === botName) name = '<BOT>';
   let messageText = `${name}: ${message.content || ''}`;
 
   // If the message has attachments, append their URLs to the message text
