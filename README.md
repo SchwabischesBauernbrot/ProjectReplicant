@@ -27,12 +27,12 @@ filter:yoursubjectname
 ```
 Do not use spaces!
 Then export.
-# Step Three
+## Step Three
 Put the logs into log-input folder.
-# Step Four
+## Step Four
 same as above.
-# Step Five
+#3 Step Five
 Run the solo-memories.bat
 It will ask you to press space after each script is run, do so.
-# Done!
+## Done!
 Check the log-output folder for the subject's messages. 
