@@ -30,7 +30,8 @@ for (let file of files) {
         'timestamp': message.timestamp,
         'name': message.author.name,
         'content': message.content,
-        'attachments': message.attachments
+        'attachments': message.attachments,
+        'origin': jsonObject.channel.id
       };
 
       // Add the simplified object to the output array
