@@ -4,10 +4,9 @@ const fs = require('fs');
 require('dotenv').config()
 
 let botName = process.env.SUBJECT_NAME;
-let oaiKey = process.env.OPENAI_API_KEY;
 const dbClient = new ChromaClient();
 
-const embedder = new OpenAIEmbeddingFunction({openai_api_key: oaiKey})
+const embedder = new OpenAIEmbeddingFunction({openai_api_key: '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'})
 let collection;
 const inputFile = './combined-output/formatted-output.json';
 
@@ -15,7 +14,8 @@ let jsonData = fs.readFileSync(inputFile);
 let jsonObject = JSON.parse(jsonData);
 
 async function main(){
-    collection = await dbClient.getCollection({name: 'memories', embeddingFunction: embedder});
+    await dbClient.deleteCollection({name: 'memories'});
+    collection = await dbClient.createCollection({name: 'memories', embeddingFunction: embedder});
     const interactions = createInteractions(jsonObject);
     console.log(interactions);
     await addInteractions(interactions);
@@ -67,23 +67,41 @@ function createInteractions(messages) {
 main();
 
 async function addInteractions(interactions) {
+    let id = 0;
     for (let interaction of interactions) {
-        let id = 0;
         let incoming = interaction.incoming;
         let outgoing = interaction.outgoing;
         let origin = interaction.origin;
         let ids = [];
         let metadata = [];
         let documents = [];
+        let documentStrings = '';
+        
         for(let message of incoming) {
-            ids.push(`id${id}`);
-            metadata.push({name: message.name, timestamp: message.timestamp, origin: origin});
-            documents.push(`${message.name}: ${message.content}`);
-            id++;
+            let content = message.content;
+            if (message.attachments && Array.isArray(message.attachments) && message.attachments.length > 0) {
+                for (let attachment of message.attachments) {
+                    if (attachment.url) {
+                        content += ' ' + attachment.url;
+                    }
+                }
+            }
+            documentStrings += `${message.name}: ${content}` + '\n';
         }
-        ids.push(`id${id}`);
-        metadata.push({name: outgoing.name, timestamp: outgoing.timestamp, origin: origin});
-        documents.push(`${outgoing.name}: ${outgoing.content}`);
+
+        if (outgoing.attachments && Array.isArray(outgoing.attachments) && outgoing.attachments.length > 0) {
+            for (let attachment of outgoing.attachments) {
+                if (attachment.url) {
+                    outgoing.content += ' ' + attachment.url;
+                }
+            }
+        }
+        documentStrings += `${outgoing.name}: ${outgoing.content}`;
+
+        ids.push(`id` + id);
+        metadata.push({origin: origin});
+        documents.push(documentStrings);
+        id++;
 
         await collection.add(
             {

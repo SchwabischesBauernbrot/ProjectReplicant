@@ -17,8 +17,19 @@ let combinedText = '';
 let userCounter = 0;
 let userMap = new Map(); // to keep track of unique users
 
+function hasLink(content) {
+  // Checking for URLs
+  let urlRegex = /(https?:\/\/[^\s]+)/g;
+  return urlRegex.test(content);
+}
+
 for (let message of jsonObject) {
   if ((!message.content || message.content.trim() === '') && (!message.attachments || message.attachments.length === 0)) {
+    continue;
+  }
+
+  // Skip messages with attachments or links
+  if (message.attachments && message.attachments.length > 0 || hasLink(message.content)) {
     continue;
   }
 
@@ -28,28 +39,22 @@ for (let message of jsonObject) {
     userMap.set(name, ++userCounter);
   }
 
-  name = message.name === botName ? '<BOT>' : `<USER${userMap.get(name) || ''}>`;
+  name = message.name === botName ? '<BOT>' : `<USER>`;
 
-  let messageText = `${name}: ${message.content || ''}`;
-
-  if (message.attachments && message.attachments.length > 0) {
-    for (let attachment of message.attachments) {
-      messageText += ` ${attachment.url}`;
-    }
-  }
+  let messageText = message.content || '';
 
   if (name === previousName) {
-    combinedText += '\n' + messageText;
+    combinedText += ' ' + messageText;
   } else {
-    if (previousName) {
+    if (previousName && combinedText.trim() !== '') { // Ignore empty messages
       combinedMessages.push({ name: previousName, content: combinedText });
     }
-    combinedText = messageText;
+    combinedText = `${name}: ${messageText}`;
     previousName = name;
   }
 }
 
-if (previousName) {
+if (previousName && combinedText.trim() !== '') { // Ignore empty messages
   combinedMessages.push({ name: previousName, content: combinedText });
 }
 
